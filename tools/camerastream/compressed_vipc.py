@@ -38,7 +38,7 @@ def decoder(addr, vipc_server, vst, nvidia, debug=False):
 
   os.environ["ZMQ"] = "1"
   messaging.context = messaging.Context()
-  sock = messaging.sub_sock(sock_name, None, addr=addr, conflate=False)
+  sock = messaging.sub_sock_server(sock_name, None)
   cnt = 0
   last_idx = -1
   seen_iframe = False
