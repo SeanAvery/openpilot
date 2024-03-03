@@ -16,19 +16,23 @@ int main(int argc, char *argv[]) {
   layout->setMargin(0);
   layout->setSpacing(0);
 
-  {
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    layout->addLayout(hlayout);
-    hlayout->addWidget(new CameraWidget("navd", VISION_STREAM_MAP, false));
-    hlayout->addWidget(new CameraWidget("camerad", VISION_STREAM_ROAD, false));
-  }
+  // Fullscreen CameraWidget for VISION_STREAM_WIDE_ROAD
+  CameraWidget *mainCamera = new CameraWidget("camerad", VISION_STREAM_WIDE_ROAD, false);
+  layout->addWidget(mainCamera);
 
-  {
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    layout->addLayout(hlayout);
-    hlayout->addWidget(new CameraWidget("camerad", VISION_STREAM_DRIVER, false));
-    hlayout->addWidget(new CameraWidget("camerad", VISION_STREAM_WIDE_ROAD, false));
-  }
+  // Overlay CameraWidget for VISION_STREAM_DRIVER
+  CameraWidget *overlayCamera = new CameraWidget("camerad", VISION_STREAM_DRIVER, false);
+
+  // Ensure overlayCamera is a child of the main window to move freely over it
+  overlayCamera->setParent(&w); overlayCamera->setFixedSize(482, 302);
+
+  // Position the overlayCamera at the bottom right
+  int margin = 20;
+  overlayCamera->move(w.width() - overlayCamera->width() - margin, 
+                      w.height() - overlayCamera->height() - margin);
+
+  w.showFullScreen();
+  overlayCamera->setVisible(true);
 
   return a.exec();
 }
