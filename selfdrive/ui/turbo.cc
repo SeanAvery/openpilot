@@ -16,7 +16,7 @@ G29State::G29State(QObject *parent) : QObject(parent) {
 
   timer = new QTimer(this);
   QObject::connect(timer, &QTimer::timeout, this, &G29State::update);
-  timer->start(1000 / 30);
+  timer->start(1000 / UI_FREQ);
 }
 
 // g29State singleton
@@ -26,26 +26,24 @@ G29State *g29State() {
 }
 
 void G29State::update() {
-  sm->update();
+  sm->update(0);
   emit g29Update(*this);
 }
 
 TurboWindow::TurboWindow(QWidget* parent) : QWidget(parent) {
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setMargin(0);
-    layout->setSpacing(0);
+  QHBoxLayout *layout = new QHBoxLayout(this);
+  layout->setMargin(0);
+  layout->setSpacing(0);
 
-    mainCamera = new CameraWidget("camerad", VISION_STREAM_WIDE_ROAD, false);
-    layout->addWidget(mainCamera);
+  mainCamera = new CameraWidget("camerad", VISION_STREAM_WIDE_ROAD, false);
+  layout->addWidget(mainCamera);
 
-    overlayCamera = new CameraWidget("camerad", VISION_STREAM_DRIVER, false);
-    overlayCamera->setParent(this); overlayCamera->setFixedSize(482, 302);
+  overlayCamera = new CameraWidget("camerad", VISION_STREAM_DRIVER, false);
+  // Ensure overlayCamera is a child of the main window to move freely over it
+  overlayCamera->setParent(this); overlayCamera->setFixedSize(rearViewWidth, rearViewHeight);
 
-    // Ensure overlayCamera is a child of the main window to move freely over it
-    overlayCamera->setParent(this); overlayCamera->setFixedSize(482, 302);
-
-    // Connect g29Update to updateState
-    QObject::connect(g29State(), &G29State::g29Update, this, &TurboWindow::updateState);
+  // Connect g29Update to updateState
+  QObject::connect(g29State(), &G29State::g29Update, this, &TurboWindow::updateState);
 }
 
 void TurboWindow::showRearView() {
@@ -55,6 +53,12 @@ void TurboWindow::showRearView() {
   overlayCamera->setVisible(true);
 }
 
+void TurboWindow::resizeRearView(int w, int h) {
+  std::cout << "Resizing rear view to " << w << "x" << h << std::endl;
+  overlayCamera->setFixedSize(w, h);
+  showRearView();
+}
+
 void TurboWindow::updateState(const G29State &s) {
   const SubMaster &sm = *(s.sm);
   if (sm.updated("g29")) {
@@ -62,6 +66,18 @@ void TurboWindow::updateState(const G29State &s) {
     steering = g.getSteering();
     throttle = g.getThrottle();
     brake = g.getBrake();
+    auto dial = g.getButtons().getDial();
+    int w = rearViewWidth;
+    int h = rearViewHeight;
+    if (dial > 0) {
+      w = 482 + (dial * 10);
+      h = 302 + (dial * 6);
+    }
+    if (w != rearViewWidth || h != rearViewHeight) {
+      rearViewWidth = w;
+      rearViewHeight = h;
+      resizeRearView(w, h);
+    }
   }
 }
 

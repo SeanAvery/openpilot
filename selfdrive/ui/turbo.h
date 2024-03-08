@@ -27,6 +27,7 @@ class TurboWindow : public QWidget {
 public:
   TurboWindow(QWidget* parent = 0);
   void showRearView();
+  void resizeRearView(int w, int h);
 
 private:
   CameraWidget *mainCamera;
@@ -35,6 +36,8 @@ private:
   float steering = 0.0;
   float throttle = 0.0;
   float brake = 0.0;
+  int rearViewWidth = 482;
+  int rearViewHeight = 302;
 
 private slots:
   void updateState(const G29State &s);
