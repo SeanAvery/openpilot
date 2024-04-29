@@ -6,12 +6,21 @@ from openpilot.system.hardware import PC, TICI
 from openpilot.selfdrive.manager.process import PythonProcess, NativeProcess, DaemonProcess
 
 WEBCAM = os.getenv("USE_WEBCAM") is not None
+GCS_IP = os.getenv("GCS_IP", '127.0.0.1') # temp until better way to pass in IP
+VENDOR_ID = os.getenv("VENDOR_ID", '0x2b24') # turbu mcu venddr id
+PRODUCT_ID = os.getenv("PRODUCT_ID", '0x0001') # turbo mcu product id
 
 def driverview(started: bool, params: Params, CP: car.CarParams) -> bool:
   return started or params.get_bool("IsDriverViewEnabled")
 
 def notcar(started: bool, params: Params, CP: car.CarParams) -> bool:
   return started and CP.notCar
+
+def smallcar(started: bool, params: Params, CP: car.CarParams) -> bool:
+  return params.get_bool("SmallCar")
+
+def gcs(started: bool, params: Params, CP: car.CarParams) -> bool:
+  return params.get_bool("TurboDesktop")
 
 def iscar(started: bool, params: Params, CP: car.CarParams) -> bool:
   return started and not CP.notCar
@@ -86,6 +95,12 @@ procs = [
   NativeProcess("bridge", "cereal/messaging", ["./bridge"], notcar),
   PythonProcess("webrtcd", "system.webrtc.webrtcd", notcar),
   PythonProcess("webjoystick", "tools.bodyteleop.web", notcar),
+
+  # turbo procs
+  NativeProcess("turbo_encoderd", "system/loggerd", ["./encoderd"], smallcar),
+  NativeProcess("turbo_camerad", "system/camerad", ["./camerad"], smallcar),
+  NativeProcess("turbo_bridge", "cereal/messaging", ["./bridge_client", GCS_IP, "wideRoadEncodeData,driverEncodeData"], smallcar),
+  NativeProcess("turbo_arduinod", "tools/turbo/arduinod", ["./arduinod", VENDOR_ID, PRODUCT_ID, GCS_IP], smallcar),
 ]
 
 managed_processes = {p.name: p for p in procs}
