@@ -213,6 +213,7 @@ env = Environment(
     "#third_party",
     "#cereal",
     "#opendbc/can",
+    "#tools/turbo/arduinod/include",
   ],
 
   CC='clang',
@@ -407,3 +408,9 @@ if arch in ['x86_64', 'aarch64', 'Darwin'] and Dir('#tools/cabana/').exists() an
 external_sconscript = GetOption('external_sconscript')
 if external_sconscript:
   SConscript([external_sconscript])
+  
+  
+# Build turbo
+ch340 = [File('#tools/turbo/arduinod/lib/amd64/libch340.a')]
+Export('ch340')
+SConscript(['tools/turbo/arduinod/SConscript'])
