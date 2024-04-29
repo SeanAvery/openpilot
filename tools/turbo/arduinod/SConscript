@@ -1,0 +1,4 @@
+Import('env', 'arch', 'common', 'messaging', 'cereal', 'ch340')
+
+# create scons program
+env.Program('arduinod', ['arduinod.cc'], LIBS=[common, messaging, cereal, ch340, 'kj', 'capnp', 'zmq', 'usb-1.0', 'pthread'])
