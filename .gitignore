@@ -91,3 +91,4 @@ Pipfile
 
 !tools/turbo/arduinod/lib/amd64/libch340.a
 !tools/turbo/arduinod/lib/arm64/libch340.a
+tools/turbo/arduinod/arduinod
