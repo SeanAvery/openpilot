@@ -412,11 +412,11 @@ if external_sconscript:
   
 # Build turbo
 
-# if arch == "larch64" or arch == "aarch64":
-#   ch340 = [File('#tools/turbo/arduinod/lib/arm64/libch340.a')]
-# elif arch == "x86_64":
-#   ch340 = [File('#tools/turbo/arduinod/lib/amd64/libch340.a')]
-# else:
-#   ch340 = []
-# Export('ch340')
-# SConscript(['tools/turbo/arduinod/SConscript'])
+if arch == "larch64" or arch == "aarch64":
+  ch340 = [File('#tools/turbo/arduinod/lib/arm64/libch340.a')]
+elif arch == "x86_64":
+  ch340 = [File('#tools/turbo/arduinod/lib/amd64/libch340.a')]
+else:
+  ch340 = []
+Export('ch340')
+SConscript(['tools/turbo/arduinod/SConscript'])
