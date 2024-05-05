@@ -12,6 +12,15 @@ fi
 
 export STAGING_ROOT="/data/safe_staging"
 
+
 if [ -f ".env" ]; then
-  source ".env"
+  while IFS='=' read -r key value || [[ -n "$key" ]]; do
+    # Skip comments and empty lines
+    [[ "$key" =~ ^\s*#.*$ || -z "$key" ]] && continue
+    # Remove leading/trailing whitespace
+    key=$(echo "$key" | xargs)
+    value=$(echo "$value" | xargs)
+
+    export "$key=$value"
+  done < ".env"
 fi
