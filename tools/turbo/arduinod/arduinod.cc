@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <memory>
 #include <cstdlib>
-
 #include "messaging/messaging.h"
 #include "ch340.h"
 
@@ -64,24 +63,24 @@ int main(int argc, char *argv[]) {
         if (controlsMsg.hasSteering()) {
             const capnp::Data::Reader& steeringData = controlsMsg.getSteering();
             const unsigned char *steering = reinterpret_cast<const unsigned char*>(steeringData.asBytes().begin());
-            std::cout << "steering: " << steering << std::endl;
             packets.push_back((unsigned char *)steering);
         }
 
         if (controlsMsg.hasThrottle()) {
             const capnp::Data::Reader& throttleData = controlsMsg.getThrottle();
             const unsigned char *throttle = reinterpret_cast<const unsigned char*>(throttleData.asBytes().begin());
-            std::cout << "throttle: " << throttle << std::endl;
             packets.push_back((unsigned char *)throttle);
         }
 
         // send packets to MCU one at a time
         for (auto packet : packets) {
-            std::cout << "packet: " << packet << std::endl;
             // send packet
             err = mcu.bulk_write(EP_DATA_OUT, packet, 5, 100);
             if (err < 0) {
-                std::cout << "bulk_write error" << std::endl;
+                if (err == LIBUSB_ERROR_NO_DEVICE) {
+                    std::cerr << "Device has disconnected." << std::endl;
+                    return err;
+                }
             }
         }
     }
