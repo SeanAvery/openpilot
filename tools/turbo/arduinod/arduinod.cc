@@ -30,13 +30,14 @@ int main(int argc, char *argv[]) {
     std::string ip = argv[3];
     std::cout << "product: " << product << std::endl;
     std::cout << "vendor: " << vendor << std::endl;
-    err = mcu.init_usb(vendor, product);
+    err = mcu.init(vendor, product);
     if (err != 0) {
         std::cout << "mcu init error" << std::endl;
         return -1;
     }
 
-    // usleep(10000);
+    usleep(10000);
+
 
     // create subscriber
     std::cout << "creating subsocket" << std::endl << "connecting to pubsocket" << std::endl;
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]) {
     AlignedBuffer aligned_buf;
 
     while(1) {
-        usleep(20000); // 50 hz loop
+        usleep(20);
 
         std::unique_ptr<Message> msg(sub->receive());
         if (!msg) {
