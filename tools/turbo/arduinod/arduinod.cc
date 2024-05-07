@@ -4,6 +4,8 @@
 #include <memory>
 #include <cstdlib>
 #include "messaging/messaging.h"
+#include "common/watchdog.h"
+#include "common/timing.h"
 #include "ch340.h"
 
 void signalHandler(int signum) {
@@ -36,7 +38,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    usleep(10000);
+    usleep(100000); // 100 ms
 
 
     // create subscriber
@@ -46,7 +48,8 @@ int main(int argc, char *argv[]) {
     AlignedBuffer aligned_buf;
 
     while(1) {
-        usleep(20);
+        usleep(10000); // 100 hz
+        watchdog_kick(nanos_since_boot());
 
         std::unique_ptr<Message> msg(sub->receive());
         if (!msg) {
@@ -64,6 +67,7 @@ int main(int argc, char *argv[]) {
         if (controlsMsg.hasSteering()) {
             const capnp::Data::Reader& steeringData = controlsMsg.getSteering();
             const unsigned char *steering = reinterpret_cast<const unsigned char*>(steeringData.asBytes().begin());
+            std::cout << steering << std::endl;
             packets.push_back((unsigned char *)steering);
         }
 
@@ -80,7 +84,7 @@ int main(int argc, char *argv[]) {
             if (err < 0) {
                 if (err == LIBUSB_ERROR_NO_DEVICE) {
                     std::cerr << "Device has disconnected." << std::endl;
-                    return err;
+                    return -1;
                 }
             }
         }
