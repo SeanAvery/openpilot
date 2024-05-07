@@ -100,7 +100,7 @@ procs = [
   NativeProcess("turbo_encoderd", "system/loggerd", ["./encoderd"], smallcar),
   NativeProcess("turbo_camerad", "system/camerad", ["./camerad"], smallcar),
   NativeProcess("turbo_bridge", "cereal/messaging", ["./bridge_client", GCS_IP, "wideRoadEncodeData,driverEncodeData"], smallcar),
-  DaemonProcess("turbo_arduinod", "tools/turbo/arduinod", ["./arduinod", VENDOR_ID, PRODUCT_ID, GCS_IP], smallcar, watchdog_max_dt=5),
+  NativeProcess("turbo_arduinod", "tools/turbo/arduinod", ["./arduinod", VENDOR_ID, PRODUCT_ID, GCS_IP], smallcar, watchdog_max_dt=5),
 ]
 
 managed_processes = {p.name: p for p in procs}
