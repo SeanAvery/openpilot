@@ -21,6 +21,8 @@ int main(int argc, char *argv[]) {
         std::cout << "usage: ./arduinod <vendor> <product> <ip>" << std::endl;
         return -1;
     }
+    // kick here to keep watchdog engaged
+    watchdog_kick(nanos_since_boot());
 
     // exit handler
     signal(SIGINT, signalHandler);
@@ -37,7 +39,6 @@ int main(int argc, char *argv[]) {
         std::cout << "mcu init error" << std::endl;
         return -1;
     }
-
     usleep(100000); // 100 ms
 
 
@@ -92,3 +93,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
