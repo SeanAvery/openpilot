@@ -20,7 +20,7 @@ def smallcar(started: bool, params: Params, CP: car.CarParams) -> bool:
   return params.get_bool("SmallCar")
 
 def gcs(started: bool, params: Params, CP: car.CarParams) -> bool:
-  return params.get_bool("TurboDesktop")
+  return params.get_bool("TurboPC")
 
 def iscar(started: bool, params: Params, CP: car.CarParams) -> bool:
   return started and not CP.notCar
@@ -96,11 +96,17 @@ procs = [
   PythonProcess("webrtcd", "system.webrtc.webrtcd", notcar),
   PythonProcess("webjoystick", "tools.bodyteleop.web", notcar),
 
-  # turbo procs
+  # turbo ugv
   NativeProcess("turbo_encoderd", "system/loggerd", ["./encoderd"], smallcar),
   NativeProcess("turbo_camerad", "system/camerad", ["./camerad"], smallcar),
   NativeProcess("turbo_bridge", "cereal/messaging", ["./bridge_client", GCS_IP, "wideRoadEncodeData,driverEncodeData"], smallcar),
   NativeProcess("turbo_arduinod", "tools/turbo/arduinod", ["./arduinod", VENDOR_ID, PRODUCT_ID, GCS_IP], smallcar, watchdog_max_dt=5),
+
+  # turbo gcs
+  NativeProcess("turbo_camerastream", "tools/camerastream", ["./compressed_vipc.py", "localhost", "--cams=1,2"], gcs),
+  NativeProcess("turbo_ui", "selfdrive/ui", ["./turbo"], gcs),
+  NativeProcess("turbo_bridge", "cereal/messaging", ["./bridge", "controlsMsg"], gcs),
+  PythonProcess("turbo_g29", "tools.turbo.g29d", gcs)
 ]
 
 managed_processes = {p.name: p for p in procs}
