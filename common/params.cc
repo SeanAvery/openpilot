@@ -208,7 +208,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"VisionRadarToggle", PERSISTENT},
     {"WheeledBody", PERSISTENT},
     {"SmallCar", CLEAR_ON_MANAGER_START},
-    {"TurboDesktop", CLEAR_ON_MANAGER_START}
+    {"TurboPC", CLEAR_ON_MANAGER_START}
 };
 
 } // namespace
