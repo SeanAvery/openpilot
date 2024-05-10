@@ -106,7 +106,7 @@ procs = [
   NativeProcess("turbo_camerastream", "tools/camerastream", ["./compressed_vipc.py", "0.0.0.0", "--cams=1,2"], gcs),
   NativeProcess("turbo_ui", "selfdrive/ui", ["./turbo"], gcs, watchdog_max_dt=5),
   NativeProcess("turbo_bridge_server", "cereal/messaging", ["./bridge", "controlsMsg"], gcs),
-  PythonProcess("turbo_g29", "tools.turbo.g29d", gcs)
+  PythonProcess("turbo_g29", "tools.turbo.g29d", gcs, watchdog_max_dt=5)
 ]
 
 managed_processes = {p.name: p for p in procs}

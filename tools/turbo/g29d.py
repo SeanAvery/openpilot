@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import time
+import struct
 
 from g29py import G29
 import cereal.messaging as messaging
@@ -9,10 +10,18 @@ STEERING_RANGE = (90, 60, 120) # (center, min, max)
 THROTTLE_RANGE = (60, 90, 130) # (neutral, min, max)
 NEUTRAL_RANGE = 7
 
-# the pedals to not mechanically sit a 0
+# the pedals do not mechanically sit a 0
 # so we add small threshold trigger value
 THROTTLE_THRESHOLD = 0.05
 BREAKING_THRESHOLD = 0.05
+
+WATCHDOG_FN_PREFIX = "/dev/shm/wd_"
+
+def watchdog_kick(ts):
+    fn = WATCHDOG_FN_PREFIX + str(os.getpid())
+    with open(fn, 'wb') as f:
+        f.write(struct.pack('Q', int(ts*1e9)))
+    return os.path.exists(fn)
 
 def normalize_steering(val):
 	return round(STEERING_RANGE[0] + val * ((STEERING_RANGE[2] - STEERING_RANGE[1])/2))
@@ -48,7 +57,6 @@ def main():
     # connect to wheel/pedal
     g29 = G29()
     
-    # reset ??? why is this breaking
     # set autocenter
     g29.set_range(500)
     g29.set_autocenter(0.25, 0.25)
@@ -58,15 +66,20 @@ def main():
     g29_sock = messaging.pub_sock("g29")
     controls_sock = messaging.pub_sock("controlsMsg")
 
-    g29.start_pumping()
-    while 1:
+    g29.listen()
+    connected = True
+    while connected:
         # 50 hz loop
         time.sleep(0.04)
-        state = g29.get_state()
+        watchdog_kick(time.monotonic())
+        try:
+            state = g29.get_state()
+        except Exception as e:
+            print(f"Error getting state: {e}")
+            connected = False
+            continue
         
         controls_data = messaging.new_message("controlsMsg")
-        steering = normalize_steering(state["steering"])
-        throttle = normalize_long(state["accelerator"], state["brake"]*-1.0)
         controls_data.controlsMsg.steering = format_msg("s", normalize_steering(float(state["steering"])))
         controls_data.controlsMsg.throttle = format_msg("t", normalize_long(float(state["accelerator"]), float(state["brake"]*-1.0)))
         controls_sock.send(controls_data.to_bytes())  
@@ -80,6 +93,8 @@ def main():
             "dial": state["buttons"]["misc2"]["dial"],
         }
         g29_sock.send(g29_data.to_bytes())
+    print("the end")
+    return -1
 
 if __name__ == "__main__":
     main()
