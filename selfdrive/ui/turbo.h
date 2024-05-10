@@ -2,7 +2,8 @@
 
 #include "selfdrive/ui/qt/widgets/cameraview.h"
 #include "cereal/messaging/messaging.h"
-
+#include "common/watchdog.h"
+#include "common/timing.h"
 #include <QtWidgets>
 
 class G29State : public QObject {

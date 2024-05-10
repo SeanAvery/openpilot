@@ -26,6 +26,7 @@ G29State *g29State() {
 }
 
 void G29State::update() {
+  watchdog_kick(nanos_monotonic());
   sm->update(0);
   emit g29Update(*this);
 }
