@@ -12,13 +12,8 @@ fi
 
 export STAGING_ROOT="/data/safe_staging"
 
- if [ "$(uname -m)" = "x86_64" ]; then
-    TURBO_ENV="/etc/turbo.env"
-else
-    TURBO_ENV="/data/etc/turbo.env"
-fi
-
-if [ -f $TURBO_ENV]; then
+TURBO_ENV="/data/etc/turbo.env"
+if [ -f $TURBO_ENV ]; then
   while IFS='=' read -r key value || [[ -n "$key" ]]; do
     # Skip comments and empty lines
     [[ "$key" =~ ^\s*#.*$ || -z "$key" ]] && continue
@@ -27,5 +22,5 @@ if [ -f $TURBO_ENV]; then
     value=$(echo "$value" | xargs)
 
     export "$key=$value"
-  done < ".env"
+  done < "$TURBO_ENV"
 fi
