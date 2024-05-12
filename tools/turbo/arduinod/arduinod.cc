@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
     AlignedBuffer aligned_buf;
 
     while(1) {
-        usleep(10000); // 100 hz
+        usleep(100); // 100 hz
         watchdog_kick(nanos_since_boot());
 
         std::unique_ptr<Message> msg(sub->receive());
