@@ -69,8 +69,7 @@ def main():
     g29.listen()
     connected = True
     while connected:
-        # 50 hz loop
-        time.sleep(0.04)
+        time.sleep(0.02) # 50 hz loop
         watchdog_kick(time.monotonic())
         try:
             state = g29.get_state()
@@ -93,7 +92,6 @@ def main():
             "dial": state["buttons"]["misc2"]["dial"],
         }
         g29_sock.send(g29_data.to_bytes())
-    print("the end")
     return -1
 
 if __name__ == "__main__":
