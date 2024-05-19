@@ -17,7 +17,7 @@ ENCODE_SOCKETS = {
   VisionStreamType.VISION_STREAM_ROAD: "roadEncodeData",
   VisionStreamType.VISION_STREAM_WIDE_ROAD: "wideRoadEncodeData",
   VisionStreamType.VISION_STREAM_DRIVER: "driverEncodeData",
-  VisionStreamType.VISION_STREAM_MAP: "mapsEncodeData",
+  VisionStreamType.VISION_STREAM_MAP: "mapEncodeData",
 }
 
 def decoder(addr, vipc_server, vst, nvidia, debug=False):

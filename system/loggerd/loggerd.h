@@ -74,6 +74,12 @@ const EncoderInfo main_driver_encoder_info = {
   INIT_ENCODE_FUNCTIONS(DriverEncode),
 };
 
+const EncoderInfo main_map_encoder_info = {
+  .publish_name = "mapEncodeData",
+  .filename = "map.hevc",
+  INIT_ENCODE_FUNCTIONS(MapEncode),
+};
+
 const EncoderInfo stream_road_encoder_info = {
   .publish_name = "livestreamRoadEncodeData",
   .encode_type = cereal::EncodeIndex::Type::QCAMERA_H264,
@@ -133,7 +139,7 @@ const LogCameraInfo map_camera_info{
   .thread_name = "map_cam_encoder",
   .type = WideRoadCam,
   .stream_type = VISION_STREAM_MAP,
-  .encoder_infos = {main_wide_road_encoder_info}
+  .encoder_infos = {main_map_encoder_info}
 };
 
 const LogCameraInfo stream_road_camera_info{

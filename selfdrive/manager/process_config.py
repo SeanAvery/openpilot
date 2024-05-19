@@ -107,7 +107,7 @@ procs = [
   # turbo ugv
   NativeProcess("turbo_encoderd", "system/loggerd", ["./encoderd", "--turbo"], smallcar),
   NativeProcess("turbo_camerad", "system/camerad", ["./camerad"], smallcar),
-  NativeProcess("turbo_bridge_client", "cereal/messaging", ["./bridge_client", GCS_IP, "wideRoadEncodeData,driverEncodeData,mapsEncodeData"], smallcar),
+  NativeProcess("turbo_bridge_client", "cereal/messaging", ["./bridge_client", GCS_IP, "wideRoadEncodeData,driverEncodeData,mapEncodeData"], smallcar),
   NativeProcess("turbo_arduinod", "tools/turbo/arduinod", ["./arduinod", VENDOR_ID, PRODUCT_ID, GCS_IP], smallcar, watchdog_max_dt=5),
   NativeProcess("turbo_log", "system/loggerd", ["./loggerd"], turbolog),
 
