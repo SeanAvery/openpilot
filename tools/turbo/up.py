@@ -5,6 +5,12 @@ import sys
 
 if __name__ == "__main__":
     params = Params()
+    if "-down" in sys.argv:
+        print("Turbo disabled")
+        params.put("TurboPC", "0")
+        params.put("SmallCar", "0")
+        params.put("TurboLog", "0")
+        sys.exit()
     if "-log" in sys.argv:
         print("Logging enabled")
         params.put("TurboLog", "1")
