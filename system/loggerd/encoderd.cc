@@ -128,6 +128,7 @@ void encoderd_thread(const LogCameraInfo (&cameras)[N]) {
   if (!streams.empty()) {
     std::vector<std::thread> encoder_threads;
     for (auto stream : streams) {
+      printf("stream %d\n", stream);
       auto it = std::find_if(std::begin(cameras), std::end(cameras),
                              [stream](auto &cam) { return cam.stream_type == stream; });
       assert(it != std::end(cameras));
