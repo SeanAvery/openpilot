@@ -129,6 +129,13 @@ const LogCameraInfo driver_camera_info{
   .encoder_infos = {main_driver_encoder_info}
 };
 
+const LogCameraInfo map_camera_info{
+  .thread_name = "map_cam_encoder",
+  .type = WideRoadCam,
+  .stream_type = VISION_STREAM_MAP,
+  .encoder_infos = {main_wide_road_encoder_info}
+};
+
 const LogCameraInfo stream_road_camera_info{
   .thread_name = "road_cam_encoder",
   .type = RoadCam,
@@ -152,3 +159,4 @@ const LogCameraInfo stream_driver_camera_info{
 
 const LogCameraInfo cameras_logged[] = {road_camera_info, wide_road_camera_info, driver_camera_info};
 const LogCameraInfo stream_cameras_logged[] = {stream_road_camera_info, stream_wide_road_camera_info, stream_driver_camera_info};
+const LogCameraInfo turbo_cameras_logged[] = {wide_road_camera_info, driver_camera_info, map_camera_info};

@@ -105,14 +105,14 @@ procs = [
   PythonProcess("webjoystick", "tools.bodyteleop.web", notcar),
 
   # turbo ugv
-  NativeProcess("turbo_encoderd", "system/loggerd", ["./encoderd"], smallcar),
+  NativeProcess("turbo_encoderd", "system/loggerd", ["./encoderd", "--turbo"], smallcar),
   NativeProcess("turbo_camerad", "system/camerad", ["./camerad"], smallcar),
   NativeProcess("turbo_bridge_client", "cereal/messaging", ["./bridge_client", GCS_IP, "wideRoadEncodeData,driverEncodeData,mapsEncodeData"], smallcar),
   NativeProcess("turbo_arduinod", "tools/turbo/arduinod", ["./arduinod", VENDOR_ID, PRODUCT_ID, GCS_IP], smallcar, watchdog_max_dt=5),
   NativeProcess("turbo_log", "system/loggerd", ["./loggerd"], turbolog),
 
   # turbo gcs
-  NativeProcess("turbo_camerastream", "tools/camerastream", ["./compressed_vipc.py", "0.0.0.0", "--cams=1,2"], gcs),
+  NativeProcess("turbo_camerastream", "tools/camerastream", ["./compressed_vipc.py", "0.0.0.0", "--cams=1,2,3"], gcs),
   NativeProcess("turbo_ui", "selfdrive/ui", ["./turbo"], gcs, watchdog_max_dt=5),
   NativeProcess("turbo_bridge_server", "cereal/messaging", ["./bridge", "controlsMsg"], gcs),
   PythonProcess("turbo_g29", "tools.turbo.g29d", gcs, watchdog_max_dt=5)
