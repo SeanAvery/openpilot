@@ -13,7 +13,8 @@ const int YUV_BUFFER_COUNT = 20;
 enum CameraType {
   RoadCam = 0,
   DriverCam,
-  WideRoadCam
+  WideRoadCam,
+  MapCam
 };
 
 // for debugging

@@ -137,7 +137,7 @@ const LogCameraInfo driver_camera_info{
 
 const LogCameraInfo map_camera_info{
   .thread_name = "map_cam_encoder",
-  .type = WideRoadCam,
+  .type = MapCam,
   .stream_type = VISION_STREAM_MAP,
   .encoder_infos = {main_map_encoder_info}
 };
